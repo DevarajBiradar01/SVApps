@@ -53,7 +53,7 @@ class RadioGroupWidgetState extends State<RadioGroupWidget> {
       ),
       groupValue: radioModel.key == id ? id : 0,
       contentPadding: const EdgeInsets.all(0),
-      visualDensity: const VisualDensity(horizontal: 1, vertical: 1),
+      visualDensity: const VisualDensity(horizontal: -1, vertical: -1),
       value: radioModel.key,
       toggleable: true,
       dense: true,

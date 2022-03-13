@@ -126,140 +126,134 @@ class _ResultSheetState extends State<ResultSheet> {
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: const [
                       Text(
                         'Q No.',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Spacer(),
                       Text(
                         'Correct',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Spacer(),
                       Text(
                         'Marked',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Spacer(),
                       Text(
                         'Result',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
                 ),
               ),
-              Container(
-                // padding: EdgeInsets.all(10),
-                child: StreamBuilder<QuerySnapshot>(
-                  stream: FirebaseFirestore.instance
-                      .collection('attendees')
-                      .where('testId', isEqualTo: data['id'])
-                      .where('userId', isEqualTo: model.userId)
-                      .snapshots(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      if (snapshot.data!.docs.length > 0) {
-                        DocumentSnapshot doc = snapshot.data!.docs.first;
-                        return SingleChildScrollView(
-                          child: ListView.builder(
-                              primary: false,
-                              shrinkWrap: true,
-                              itemCount: doc['correctAnswers'].length,
-                              itemBuilder: (context, index) {
-                                //  DocumentSnapshot doc = snapshot.data!.docs[index];
-                                return Card(
-                                  elevation: 5,
-                                  color: doc['correctAnswers'][index] ==
-                                          doc['submitted_answers'][index]
-                                      ? Colors.green.shade300
-                                      : Colors.red.shade300,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 5),
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(5)),
-                                      gradient: LinearGradient(
-                                          colors: doc['correctAnswers']
-                                                      [index] ==
-                                                  doc['submitted_answers']
-                                                      [index]
-                                              ? [
-                                                  Colors.green.shade400,
-                                                  Colors.white
-                                                ]
-                                              : [
-                                                  Colors.red.shade400,
-                                                  Colors.white
-                                                ]),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          (index + 1).toString(),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const Spacer(),
-                                        Text(
-                                          getAlphabetValue(
-                                            doc['correctAnswers'][index],
-                                          ),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const Spacer(),
-                                        Text(
-                                          getAlphabetValue(
-                                              doc['submitted_answers'][index]),
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        const Spacer(),
-                                        doc['submitted_answers'][index] ==
-                                                doc['correctAnswers'][index]
-                                            ? Icon(
-                                                Icons.check,
-                                                color: Colors.green,
-                                                size: 30,
-                                              )
-                                            : Icon(
-                                                Icons.close,
-                                                color: Colors.red,
-                                                size: 30,
-                                              ),
-                                        // const Text(
-                                        //   'Result',
-                                        //   style: TextStyle(
-                                        //       fontWeight: FontWeight.bold),
-                                        // ),
-                                      ],
-                                    ),
+              StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('attendees')
+                    .where('testId', isEqualTo: data['id'])
+                    .where('userId', isEqualTo: model.userId)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data!.docs.length > 0) {
+                      DocumentSnapshot doc = snapshot.data!.docs.first;
+                      return SingleChildScrollView(
+                        child: ListView.builder(
+                            primary: false,
+                            shrinkWrap: true,
+                            itemCount: doc['correctAnswers'].length,
+                            itemBuilder: (context, index) {
+                              //  DocumentSnapshot doc = snapshot.data!.docs[index];
+                              return Card(
+                                elevation: 5,
+                                color: doc['correctAnswers'][index] ==
+                                        doc['submitted_answers'][index]
+                                    ? Colors.green.shade300
+                                    : Colors.red.shade300,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 5),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5)),
+                                    gradient: LinearGradient(
+                                        colors: doc['correctAnswers'][index] ==
+                                                doc['submitted_answers'][index]
+                                            ? [
+                                                Colors.green.shade400,
+                                                Colors.white
+                                              ]
+                                            : [
+                                                Colors.red.shade400,
+                                                Colors.white
+                                              ]),
                                   ),
-                                );
-                              }),
-                        );
-                      } else {
-                        return const SizedBox(
-                          height: 120,
-                          child: Center(
-                            child: Text(
-                              "No exams available now",
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        );
-                      }
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        (index + 1).toString(),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        getAlphabetValue(
+                                          doc['correctAnswers'][index],
+                                        ),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const Spacer(),
+                                      Text(
+                                        getAlphabetValue(
+                                            doc['submitted_answers'][index]),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      const Spacer(),
+                                      doc['submitted_answers'][index] ==
+                                              doc['correctAnswers'][index]
+                                          ? const Icon(
+                                              Icons.check,
+                                              color: Colors.green,
+                                              size: 30,
+                                            )
+                                          : const Icon(
+                                              Icons.close,
+                                              color: Colors.red,
+                                              size: 30,
+                                            ),
+                                      // const Text(
+                                      //   'Result',
+                                      //   style: TextStyle(
+                                      //       fontWeight: FontWeight.bold),
+                                      // ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                      );
                     } else {
-                      return const Center(child: Text("No data"));
+                      return const SizedBox(
+                        height: 120,
+                        child: Center(
+                          child: Text(
+                            "No exams available now",
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
                     }
-                  },
-                ),
+                  } else {
+                    return const Center(child: Text("No data"));
+                  }
+                },
               ),
             ],
           ),

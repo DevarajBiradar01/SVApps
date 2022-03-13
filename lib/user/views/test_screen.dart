@@ -77,16 +77,18 @@ class _TestScreenState extends State<TestScreen> {
                               model.isShowQuestion
                                   ? 'OMR Sheet'
                                   : 'Result Sheet',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.bold)),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red)),
                           Text(model.isShowQuestion
                               ? '(Mark your answers below)'
                               : '(Check results below)'),
                           Container(
                             margin: EdgeInsets.all(8),
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                border: Border.all(color: Colors.grey)),
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(color: Colors.red, width: 2),
+                            ),
                             child: Consumer<TestScreenVM>(
                               builder: (context, model, child) => SizedBox(
                                 height:
@@ -168,7 +170,7 @@ class _TestScreenState extends State<TestScreen> {
                 width: MediaQuery.of(context).size.width * 0.7,
                 child: RadioGroupWidget(
                   radioList: model.radioModelList,
-                  gap: 30,
+                  gap: 15,
                   onChanged: (radioButtonId) {
                     // _scrollController.animateTo(
                     //     _scrollController.position.maxScrollExtent,

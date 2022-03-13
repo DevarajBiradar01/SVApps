@@ -14,6 +14,12 @@ class NavigationManager {
         context, MaterialPageRoute(builder: (context) => navigateToClass));
   }
 
+  static replace(BuildContext context, dynamic navigateToClass) {
+    Navigator.replace(context,
+        newRoute: MaterialPageRoute(builder: (context) => navigateToClass),
+        oldRoute: MaterialPageRoute(builder: (context) => navigateToClass));
+  }
+
   static pushAndRemoveUntil(BuildContext context, dynamic navigateToClass) {
     Navigator.pushAndRemoveUntil(
         context,

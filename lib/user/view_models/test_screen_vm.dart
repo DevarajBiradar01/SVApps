@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:svapp/user/utils/navigation_manager.dart';
+import 'package:flutter/material.dart';
 import 'package:svapp/user/views/result_sheet.dart';
 import 'package:svapp/utils/utilities.dart';
 
 import '../../firebase_auth/authentication_helper.dart';
 import '../../widgets/radio_group.dart';
+import '../utils/navigation_manager.dart';
 import '../utils/widgets.dart';
 
 class TestScreenVM extends ChangeNotifier {
@@ -59,12 +60,7 @@ class TestScreenVM extends ChangeNotifier {
     }).then((value) {
       log("AddTestVM :: saveTest ()  value : ");
       snackbar(context, 'Test Submitted Successfully');
-      NavigationManager.navigateTo(
-          context,
-          ResultSheet(
-            data: data,
-            isShowAppBar: true,
-          ));
+      showResult(context, data);
     }).catchError((onError) {
       log("CategoriesVM :: saveCategory ()  onError : " + onError.toString());
       snackbar(context, onError.toString());
@@ -103,7 +99,8 @@ class TestScreenVM extends ChangeNotifier {
   }
 
   showResult(BuildContext context, dynamic data) {
-    NavigationManager.navigateTo(context, ResultSheet(data: data));
+    NavigationManager.replaceTo(
+        context, ResultSheet(data: data, isShowAppBar: true));
   }
 
   String userId = '';
