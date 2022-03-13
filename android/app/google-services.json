@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "352702272517",
+    "project_id": "svappdevlopment",
+    "storage_bucket": "svappdevlopment.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:352702272517:android:d1c393c60f77edc639386c",
+        "android_client_info": {
+          "package_name": "com.svexams.svapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "352702272517-7cmdj0bmeidjo0mlndk8jcj0bdju1106.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.svexams.svapp",
+            "certificate_hash": "74ac069800e4bfa51738a509d74c742958a2548a"
+          }
+        },
+        {
+          "client_id": "352702272517-nm7ufmj8agvprh8n072qdig4pjknesdg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBbzVW4JIMcGPVniGp798575DPcmGlG1mk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "352702272517-nm7ufmj8agvprh8n072qdig4pjknesdg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
