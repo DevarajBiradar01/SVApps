@@ -129,7 +129,7 @@ class _ExamDescState extends State<ExamDesc> {
               ),
             ),
           ),
-          Spacer(),
+          buildColumnSpacer(),
           Consumer<ExamDescVM>(
             builder: (context, model, child) => Padding(
               padding: const EdgeInsets.all(8.0),
