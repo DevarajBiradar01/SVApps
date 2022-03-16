@@ -16,22 +16,43 @@ class PhoneAuth extends StatelessWidget {
       builder: (context, model, child) => Scaffold(
         body: Container(
           padding: const EdgeInsets.all(16),
-          child: ListView(
-            children: [
-              svgWidget(context),
-              titleMessage("Phone Authentication"),
-              buildColumnSpacer(),
-              headerMessage(
-                  "Please register your mobile number for better communication"),
-              buildColumnSpacer(),
-              UIMobileNumberField(controller: model.phoneController),
-              buildColumnSpacer(),
-              rightAlignedButton(
-                  context: context,
-                  onTap: () => model.updatePhone(context),
-                  buttonName: "NEXT"),
-              buildColumnSpacer(height: 50),
-            ],
+          height: MediaQuery.of(context).size.height,
+          alignment: Alignment.center,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  child: Image.asset(
+                    'assets/sv_logo.png',
+                    height: 100,
+                  ),
+                  alignment: Alignment.centerLeft,
+                ),
+                buildColumnSpacer(height: 20),
+                const Text(
+                  'Hello there,',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 22,
+                  ),
+                ),
+                buildColumnSpacer(height: 5),
+                const Text(
+                  'Authenticate your phone number',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                buildColumnSpacer(height: 80),
+                UIMobileNumberField(controller: model.phoneController),
+                buildColumnSpacer(height: 30),
+                fullButton(
+                    context: context,
+                    onTap: () => model.updatePhone(context),
+                    buttonName: "NEXT"),
+                buildColumnSpacer(height: 30),
+              ],
+            ),
           ),
         ),
       ),

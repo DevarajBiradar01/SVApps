@@ -98,6 +98,37 @@ InkWell alternativeTestButton(
   );
 }
 
+InkWell fullButton(
+    {required BuildContext context,
+    required Function() onTap,
+    required String buttonName}) {
+  return InkWell(
+    onTap: onTap,
+    child: Container(
+      padding: const EdgeInsets.all(16),
+      width: MediaQuery.of(context).size.width,
+      //height: 40,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        gradient: const LinearGradient(
+          colors: [
+            Colors.pinkAccent,
+            Colors.blue,
+          ],
+        ),
+      ),
+      child: Align(
+        child: Text(
+          buttonName,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600),
+        ),
+      ),
+    ),
+  );
+}
+
 InkWell centeredLinkText(
     {required BuildContext context,
     required Function() onTap,
@@ -132,11 +163,13 @@ InkWell leftLinkText(
   );
 }
 
-TextFormField passwordTextField(TextEditingController controller) {
+TextFormField passwordTextField(TextEditingController controller,
+    {String label = 'Password'}) {
   return TextFormField(
     controller: controller,
-    decoration: const InputDecoration(
-      hintText: "Password",
+    decoration: InputDecoration(
+      hintText: label,
+      label: Text(label),
     ),
     obscureText: true,
     keyboardType: TextInputType.visiblePassword,
@@ -148,6 +181,7 @@ TextFormField usernameTextField(TextEditingController controller) {
     controller: controller,
     decoration: const InputDecoration(
       hintText: "Email Id",
+      label: Text("Email Id"),
     ),
     autovalidateMode: AutovalidateMode.onUserInteraction,
     keyboardType: TextInputType.emailAddress,
@@ -200,6 +234,7 @@ Align headerMessage(String message,
 void snackbar(BuildContext context, String message) {
   SnackBar snackBar = SnackBar(
     behavior: SnackBarBehavior.floating,
+    duration: const Duration(seconds: 2),
     content: Text(
       message,
       style: const TextStyle(

@@ -18,35 +18,57 @@ class PersonalInformation extends StatelessWidget {
         resizeToAvoidBottomInset: true,
         body: Container(
           padding: const EdgeInsets.all(16),
-          child: ListView(
-            children: [
-              svgWidget(context),
-              titleMessage("Personal Information"),
-              buildColumnSpacer(),
-              headerMessage("Please provide your firstname and lastname here."),
-              buildColumnSpacer(),
-              TextFormField(
-                controller: model.firstNameController,
-                decoration: const InputDecoration(
-                  hintText: "Firstname",
+          height: MediaQuery.of(context).size.height,
+          alignment: Alignment.center,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  child: Image.asset(
+                    'assets/sv_logo.png',
+                    height: 100,
+                  ),
+                  alignment: Alignment.centerLeft,
                 ),
-                keyboardType: TextInputType.text,
-              ),
-              buildColumnSpacer(),
-              TextFormField(
-                controller: model.lastNameController,
-                decoration: const InputDecoration(
-                  hintText: "Lastname",
+                buildColumnSpacer(height: 20),
+                const Text(
+                  'Hello there,',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(
+                    fontSize: 22,
+                  ),
                 ),
-                keyboardType: TextInputType.text,
-              ),
-              buildColumnSpacer(),
-              rightAlignedButton(
-                  context: context,
-                  onTap: () => model.updateDisplayName(context, userModel),
-                  buttonName: "NEXT"),
-              buildColumnSpacer(height: 50),
-            ],
+                buildColumnSpacer(height: 5),
+                const Text(
+                  'Personal details',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                buildColumnSpacer(height: 100),
+                TextFormField(
+                  controller: model.firstNameController,
+                  decoration: const InputDecoration(
+                    hintText: "Firstname",
+                    label: Text('Firstname'),
+                  ),
+                  keyboardType: TextInputType.text,
+                ),
+                buildColumnSpacer(height: 30),
+                TextFormField(
+                  controller: model.lastNameController,
+                  decoration: const InputDecoration(
+                      hintText: "Lastname", label: Text('Lastname')),
+                  keyboardType: TextInputType.text,
+                ),
+                buildColumnSpacer(height: 30),
+                fullButton(
+                    context: context,
+                    onTap: () => model.updateDisplayName(context, userModel),
+                    buttonName: "NEXT"),
+                buildColumnSpacer(height: 30),
+              ],
+            ),
           ),
         ),
       ),

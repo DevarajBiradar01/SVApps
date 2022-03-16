@@ -222,7 +222,11 @@ class TestCard extends StatelessWidget {
                 ),
               );
             }
-          } else {
+          }
+          // if (snapshot.connectionState == ConnectionState.waiting) {
+          //   return CircularProgressIndicator();
+          // }
+          else {
             return const Center(child: Text("No data"));
           }
         },

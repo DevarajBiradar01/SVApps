@@ -12,38 +12,52 @@ class SignUp extends StatelessWidget {
     return Consumer<SignUpVM>(
       builder: (context, model, child) => Scaffold(
         body: Container(
-          padding: const EdgeInsets.all(16),
-          child: ListView(
-            children: [
-              svgWidget(context,
-                  svgPath: 'assets/signup_logo.png',
-                  height: 400.0,
-                  width: MediaQuery.of(context).size.width,
-                  fit: BoxFit.contain),
-              titleMessage('Sign Up'),
-              buildColumnSpacer(),
-              headerMessage(
-                  "Please register to SV Exams App by providing email id and password"),
-              buildColumnSpacer(),
-              usernameTextField(model.usernameController),
-              buildColumnSpacer(),
-              passwordTextField(model.passwordController),
-              buildColumnSpacer(),
-              Row(
-                children: [
-                  leftLinkText(
-                      context: context,
-                      onTap: () => model.onSignInPressed(context),
-                      link: 'Have an account?'),
-                  const Spacer(),
-                  rightAlignedButton(
-                      context: context,
-                      onTap: () => model.signUp(context),
-                      buttonName: 'SIGN UP'),
-                ],
-              ),
-              buildColumnSpacer(height: 50),
-            ],
+          padding: const EdgeInsets.only(left: 16, right: 16),
+          height: MediaQuery.of(context).size.height,
+          alignment: Alignment.center,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  child: Image.asset(
+                    'assets/sv_logo.png',
+                    height: 100,
+                  ),
+                  alignment: Alignment.centerLeft,
+                ),
+                buildColumnSpacer(height: 20),
+                const Text(
+                  'Hello there,',
+                  textAlign: TextAlign.left,
+                  style: (TextStyle(
+                    fontSize: 22,
+                  )),
+                ),
+                buildColumnSpacer(height: 5),
+                const Text(
+                  'Get on Board',
+                  textAlign: TextAlign.left,
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                buildColumnSpacer(height: 100),
+                usernameTextField(model.usernameController),
+                buildColumnSpacer(height: 30),
+                passwordTextField(model.passwordController,
+                    label: 'Create your password'),
+                buildColumnSpacer(height: 30),
+                fullButton(
+                    context: context,
+                    onTap: () => model.signUp(context),
+                    buttonName: 'SIGN UP'),
+                buildColumnSpacer(height: 30),
+                leftLinkText(
+                    context: context,
+                    onTap: () => model.onSignInPressed(context),
+                    link: 'Have an account? Click here to sign in'),
+                buildColumnSpacer(height: 30),
+              ],
+            ),
           ),
         ),
       ),

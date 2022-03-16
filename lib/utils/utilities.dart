@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:svapp/user/utils/widgets.dart';
 
 log(String message) {
@@ -83,6 +84,42 @@ getTodayDateTimeStamp() {
   DateTime dateTime =
       DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   return dateTime.millisecondsSinceEpoch;
+}
+
+showProgress(BuildContext context) {
+  return showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      contentPadding: const EdgeInsets.all(0),
+      content: Container(
+        height: 120,
+        width: 80,
+        padding: const EdgeInsets.all(10),
+        decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.red, Colors.blue])),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: CircularProgressIndicator(color: Colors.white),
+            ),
+            Text(
+              'Processing...',
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white),
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
 }
 
 // void documentFileUpload(String str) {

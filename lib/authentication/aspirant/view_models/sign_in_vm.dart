@@ -25,6 +25,7 @@ class SignInVM extends ChangeNotifier {
   void signIn(BuildContext context) async {
     log("SignInVM :: signIn ()  ");
     try {
+      showProgress(context);
       if (username.isNotEmpty && password.isNotEmpty) {
         UserCredential userCredential = await AuthenticationHelper()
             .signIn(email: username, password: password, context: context);
@@ -64,7 +65,6 @@ class SignInVM extends ChangeNotifier {
     log("SignInVM :: saveUserDetailsLocally ()  ");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     User user = userCredential.user!;
-    UserModel userModel = UserModel(email: user.email!, userId: user.uid);
 
     final userRef = _db.collection('users').doc(user.uid);
     await userRef.get().then((value) {
@@ -74,6 +74,7 @@ class SignInVM extends ChangeNotifier {
       if (user.role == 'user') {
         prefs.setString('user_details', json.encode(value.data()));
         snackbar(context, 'Logged in successfully!');
+        resetFields();
         NavigationManager.pushAndRemoveUntil(context, UserHome());
       } else {
         log("SignInVM :: saveUserDetailsLocally () : Login Failed ");

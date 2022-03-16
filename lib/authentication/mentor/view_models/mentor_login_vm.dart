@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,7 +58,6 @@ class MentorLoginVm extends ChangeNotifier {
     log("SignInVM :: saveUserDetailsLocally ()  ");
     SharedPreferences prefs = await SharedPreferences.getInstance();
     User user = userCredential.user!;
-    UserModel userModel = UserModel(email: user.email!, userId: user.uid);
 
     final userRef = _db.collection('users').doc(user.uid);
     await userRef.get().then((value) {
@@ -64,8 +65,9 @@ class MentorLoginVm extends ChangeNotifier {
       var response = value.data();
       UserModel user = UserModel.fromMap(response!);
       if (user.role == 'mentor') {
-        prefs.setString('user_details', value.data().toString());
+        prefs.setString('user_details', json.encode(value.data()));
         snackbar(context, 'Logged in successfully!');
+        resetFields();
         NavigationManager.pushAndRemoveUntil(context, MentorHome());
       } else {
         log("SignInVM :: saveUserDetailsLocally () : Login Failed ");
@@ -84,6 +86,10 @@ class MentorLoginVm extends ChangeNotifier {
     prefs.setString('user_details', '');
     log("SignInVM :: Logged out successfully  ");
     snackbar(context, ' Logged out successfully');
+    NavigationManager.navigateToLogin(context);
+  }
+
+  loginAsAspirant(BuildContext context) {
     NavigationManager.navigateToLogin(context);
   }
 }
