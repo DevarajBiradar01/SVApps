@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:svapp/user/utils/widgets.dart';
+import 'package:svapp/user/views/pdfs.dart';
+import 'package:svapp/user/views/videos.dart';
 
 import '../../live_exams_list.dart';
 import '../../utils/utilities.dart';
@@ -9,6 +12,7 @@ import '../../widgets/categories_list_view_all.dart';
 import '../../widgets/header_card.dart';
 import '../../widgets/test_card.dart';
 import '../utils/navigation_manager.dart';
+import 'drawer.dart';
 
 class UserHome extends StatefulWidget {
   const UserHome({Key? key}) : super(key: key);
@@ -24,13 +28,48 @@ class _UserHomeState extends State<UserHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const Drawer(),
+      drawer: buildUserDrawer(context),
       appBar: dashboardAppBar(title: 'Aspirant Dashboard'),
       body: Container(
         padding: const EdgeInsets.all(2),
         child: ListView(
           shrinkWrap: true,
           children: [
+            Row(
+              children: [
+                buildMenuCard(
+                    label: 'Exams',
+                    onTap: () {
+                      NavigationManager.navigateTo(
+                        context,
+                        LiveExamsList(
+                          appTitle: 'Live Exams',
+                          query: FirebaseFirestore.instance
+                              .collection('test')
+                              .where('endDate',
+                                  isGreaterThanOrEqualTo:
+                                      getTodayDateTimeStamp())
+                              .snapshots(),
+                        ),
+                      );
+                    },
+                    gradientColors: [Colors.pinkAccent, Colors.deepOrange]),
+                const Spacer(),
+                buildMenuCard(
+                    label: 'Videos',
+                    onTap: () {
+                      NavigationManager.navigateTo(context, const Videos());
+                    },
+                    gradientColors: [Colors.green, Colors.blue]),
+                const Spacer(),
+                buildMenuCard(
+                    label: 'PDFs',
+                    onTap: () {
+                      NavigationManager.navigateTo(context, const PDFs());
+                    },
+                    gradientColors: [Colors.pink, Colors.yellow]),
+              ],
+            ),
             HeaderCard(
               title: 'LIVE EXAMS',
               onTap: () => NavigationManager.navigateTo(
@@ -61,7 +100,6 @@ class _UserHomeState extends State<UserHome> {
               onTap: () => NavigationManager.navigateTo(
                   context, CategoriesListViewAll()),
             ),
-            // SubCategoryCard(),
             buildCategoryCardGridView(),
             Card(
               color: Colors.orange.shade200,
@@ -152,6 +190,33 @@ class _UserHomeState extends State<UserHome> {
           return const Center(child: Text("No data"));
         }
       },
+    );
+  }
+
+  buildMenuCard(
+      {required String label,
+      required dynamic onTap,
+      List<Color> gradientColors = const [Colors.red, Colors.blue]}) {
+    return Card(
+      elevation: 5,
+      child: InkWell(
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          height: 40,
+          width: MediaQuery.of(context).size.width * .3,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            gradient: LinearGradient(colors: gradientColors),
+          ),
+          child: Text(
+            label,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+                color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        ),
+        onTap: onTap,
+      ),
     );
   }
 }

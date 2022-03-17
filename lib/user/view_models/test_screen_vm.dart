@@ -14,7 +14,7 @@ class TestScreenVM extends ChangeNotifier {
   int questions = 0;
   late List<dynamic> correctAnswers;
   late List<int> answers;
-  late List<dynamic> markedAnswers;
+  // late List<dynamic> markedAnswers;
 
   String timer = '0:00';
   String pdfUrl = '';
@@ -28,7 +28,7 @@ class TestScreenVM extends ChangeNotifier {
     isShowQuestion = true;
     correctAnswerCount = 0;
     wrongAnswerCount = 0;
-    markedAnswers = List.filled(questions, -1);
+    // markedAnswers = List.filled(questions, -1);
   }
 
   List<FormModel> radioModelList = [
@@ -110,16 +110,16 @@ class TestScreenVM extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> getMarkedAnswers(String testId) async {
-    // Get docs from collection reference
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection('attendees')
-        .where('testId', isEqualTo: testId)
-        .get();
-
-    // Get data from docs and convert map to List
-    markedAnswers = querySnapshot.docs.map((doc) => doc.data()).toList();
-    log(markedAnswers.toString());
-    notifyListeners();
-  }
+  // Future<void> getMarkedAnswers(String testId) async {
+  //   // Get docs from collection reference
+  //   QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+  //       .collection('attendees')
+  //       .where('testId', isEqualTo: testId)
+  //       .get();
+  //
+  //   // Get data from docs and convert map to List
+  //   markedAnswers = querySnapshot.docs.map((doc) => doc.data()).toList();
+  //   log(markedAnswers.toString());
+  //   notifyListeners();
+  // }
 }

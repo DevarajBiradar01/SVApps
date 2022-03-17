@@ -39,10 +39,12 @@ class SignUpVM extends ChangeNotifier {
             'Password must be of minimum 8 characters and must contain at least one lower, one upper, one number and one special character');
       } else {
         log("SignUpVM :: signUp () : Authentication - ");
+        showProgress(context);
         UserCredential userCredential = await AuthenticationHelper()
             .signUp(email: username, password: password, context: context);
         log("SignUpVM :: signUp () : response - " + userCredential.toString());
         saveUserDetailsLocally(context, userCredential);
+        Navigator.pop(context);
         resetFields();
       }
     } catch (exception) {

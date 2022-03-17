@@ -18,6 +18,7 @@ class PhoneAuthVM extends ChangeNotifier {
       log("PhoneAuthVM :: updatePhone () - Please enter valid 10 digit phone number");
       snackbar(context, 'Please enter valid 10 digit phone number');
     } else {
+      showProgress(context);
       String? deviceId = await getDeviceId();
       User? user = await AuthenticationHelper().getCurrentUser;
       UserModel userModel = UserModel(
@@ -32,11 +33,13 @@ class PhoneAuthVM extends ChangeNotifier {
         await userRef.update(userModel.asMap()).then((value) {
           log("PhoneAuthVM :: updatePhone ()  value : ");
           snackbar(context, 'User updated successfully!');
+          Navigator.pop(context);
           NavigationManager.navigateTo(
               context, PersonalInformation(userModel: userModel));
         }).catchError((onError) {
           log("SignInVM :: saveUserDetailsLocally ()  onError : " +
               onError.toString());
+          Navigator.pop(context);
           snackbar(context, onError.toString());
         });
       }

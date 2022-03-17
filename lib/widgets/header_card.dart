@@ -35,7 +35,7 @@ class HeaderCard extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              height: 45,
+              height: 35,
               child: headerMessage(
                 title,
                 fontColor: Colors.white,

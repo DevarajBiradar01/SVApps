@@ -25,15 +25,17 @@ class SignInVM extends ChangeNotifier {
   void signIn(BuildContext context) async {
     log("SignInVM :: signIn ()  ");
     try {
-      showProgress(context);
       if (username.isNotEmpty && password.isNotEmpty) {
+        showProgress(context);
         UserCredential userCredential = await AuthenticationHelper()
             .signIn(email: username, password: password, context: context);
         log("SignInVM :: signIn () : userCredential - " +
             userCredential.toString());
+
         if (userCredential != null) {
           getUserDetails(context, userCredential);
         }
+        Navigator.pop(context);
       } else {
         log("SignInVM :: signIn () : Please enter username and password!");
       }

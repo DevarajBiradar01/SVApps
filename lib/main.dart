@@ -10,6 +10,7 @@ import 'package:svapp/splash/views/splash_screen.dart';
 import 'package:svapp/theme/constants.dart';
 import 'package:svapp/user/view_models/exam_desc_vm.dart';
 import 'package:svapp/user/view_models/test_screen_vm.dart';
+import 'package:svapp/user/view_models/user_drawer_vm.dart';
 import 'package:svapp/user/view_models/user_home_vm.dart';
 
 import 'authentication/aspirant/view_models/personal_info_vm.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<ExamDescVM>(create: (_) => ExamDescVM()),
         ChangeNotifierProvider<TestScreenVM>(create: (_) => TestScreenVM()),
         ChangeNotifierProvider<UserHomeVM>(create: (_) => UserHomeVM()),
+        ChangeNotifierProvider<UserDrawerVM>(create: (_) => UserDrawerVM())
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

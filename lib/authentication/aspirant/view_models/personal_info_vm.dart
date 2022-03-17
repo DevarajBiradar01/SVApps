@@ -21,6 +21,7 @@ class PersonalInfoVM extends ChangeNotifier {
       log("PersonalInfoVM :: updateDisplayName () - Please enter firstname and lastname");
       snackbar(context, 'Please enter firstname and lastname');
     } else {
+      showProgress(context);
       User? user = await AuthenticationHelper().getCurrentUser;
       userModel.firstName = firstname;
       userModel.lastName = lastname;
@@ -30,10 +31,12 @@ class PersonalInfoVM extends ChangeNotifier {
         await userRef.update(userModel.asMap()).then((value) {
           log("PhoneAuthVM :: updateDisplayName ()  value : ");
           snackbar(context, 'User updated successfully!');
+          Navigator.pop(context);
           NavigationManager.replaceTo(context, const UserHome());
         }).catchError((onError) {
           log("SignInVM :: updateDisplayName ()  onError : " +
               onError.toString());
+          Navigator.pop(context);
           snackbar(context, onError.toString());
         });
       }

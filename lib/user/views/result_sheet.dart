@@ -29,8 +29,8 @@ class _ResultSheetState extends State<ResultSheet> {
     super.initState();
     data = widget.data;
     Provider.of<TestScreenVM>(context, listen: false).getCurrentUserId();
-    Provider.of<TestScreenVM>(context, listen: false)
-        .getMarkedAnswers(data['id']);
+    // Provider.of<TestScreenVM>(context, listen: false)
+    //     .getMarkedAnswers(data['id']);
     getUserId();
   }
 

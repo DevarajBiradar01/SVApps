@@ -24,6 +24,7 @@ class MentorLoginVm extends ChangeNotifier {
     log("SignInVM :: signIn ()  ");
     try {
       if (username.isNotEmpty && password.isNotEmpty) {
+        showProgress(context);
         UserCredential userCredential = await AuthenticationHelper()
             .signIn(email: username, password: password, context: context);
         log("SignInVM :: signIn () : userCredential - " +
@@ -31,6 +32,7 @@ class MentorLoginVm extends ChangeNotifier {
         if (userCredential != null) {
           getUserDetails(context, userCredential);
         }
+        Navigator.pop(context);
       } else {
         log("SignInVM :: signIn () : Please enter username and password!");
       }
