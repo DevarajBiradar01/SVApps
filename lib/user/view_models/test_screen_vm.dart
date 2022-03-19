@@ -69,9 +69,7 @@ class TestScreenVM extends ChangeNotifier {
 
   onRadioButtonChanged(radioButtonId, int index, BuildContext context) {
     answers[index] = radioButtonId;
-    log(index.toString());
 
-    print(answers);
     notifyListeners();
   }
 

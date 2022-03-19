@@ -6,6 +6,7 @@ import 'package:svapp/user/view_models/test_screen_vm.dart';
 import 'package:svapp/user/views/result_sheet.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
+import '../../utils/utilities.dart';
 import '../../widgets/radio_group.dart';
 
 class TestScreen extends StatefulWidget {
@@ -51,21 +52,34 @@ class _TestScreenState extends State<TestScreen> {
       ),
       body: Column(
         children: [
-          Flexible(
-            child: Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(10),
+          Consumer<TestScreenVM>(
+            builder: (context, model, child) => Flexible(
+              child: Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
                 ),
+                height: MediaQuery.of(context).size.height * .45,
+                child: model.pdfUrl != ''
+                    ? SfPdfViewer.network(
+                        model.pdfUrl,
+                        canShowScrollStatus: true,
+                        enableTextSelection: false,
+                        canShowPasswordDialog: true,
+                        canShowPaginationDialog: true,
+                        canShowScrollHead: true,
+                        enableDoubleTapZooming: true,
+                        enableDocumentLinkAnnotation: true,
+                        currentSearchTextHighlightColor: Colors.blueAccent,
+                        onDocumentLoaded: (val) {
+                          log(val.toString());
+                        },
+                        pageLayoutMode: PdfPageLayoutMode.continuous,
+                        //  interactionMode: PDFIN,
+                      )
+                    : Container(),
               ),
-              height: MediaQuery.of(context).size.height * .45,
-              child: Provider.of<TestScreenVM>(context, listen: false).pdfUrl !=
-                      ''
-                  ? SfPdfViewer.network(
-                      Provider.of<TestScreenVM>(context, listen: false).pdfUrl,
-                      enableTextSelection: false,
-                      canShowPaginationDialog: true)
-                  : Container(),
             ),
           ),
           Flexible(

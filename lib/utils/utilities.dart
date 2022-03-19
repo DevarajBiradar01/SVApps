@@ -26,7 +26,7 @@ Future<String?> getDeviceId() async {
   }
 }
 
-Future getPdfAndUpload(BuildContext context) async {
+Future getPdfAndUpload(BuildContext context, {String directory = ''}) async {
   String url = '';
   try {
     var rng = Random();
@@ -47,7 +47,10 @@ Future getPdfAndUpload(BuildContext context) async {
       log('${result.files.single.path!}');
       File file = File(result.files.single.path!);
       FirebaseStorage storage = FirebaseStorage.instance;
-      Reference ref = storage.ref().child('exam_files').child(fileName);
+      Reference ref = storage
+          .ref()
+          .child(directory.isEmpty ? 'exam_files' : directory)
+          .child(fileName);
       UploadTask uploadTask = ref.putFile(file);
       url = uploadTask.snapshot.ref.fullPath;
     } else {
@@ -71,7 +74,7 @@ int convertStringToTimeStamp(String date) {
 }
 
 String convertTimeStampToDateString(int timestamp) {
-  log(timestamp.toString());
+  log("Utilities :: convertTimeStampToDateString " + timestamp.toString());
   DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
   return dateTime.day.toString() +
       "/" +

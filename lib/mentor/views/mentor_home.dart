@@ -3,7 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:svapp/mentor/views/categories.dart';
+import 'package:svapp/mentor/views/pdf_list.dart';
 import 'package:svapp/mentor/views/sub_categories.dart';
+import 'package:svapp/mentor/views/video_list.dart';
 import 'package:svapp/user/utils/navigation_manager.dart';
 
 import '../../live_exams_list.dart';
@@ -57,6 +59,28 @@ class _MentorHomeState extends State<MentorHome> {
                   ),
                 ),
               ),
+            ),
+            InkWell(
+              child: const Card(
+                child: ListTile(
+                  title: Text('PDfs'),
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                NavigationManager.navigateTo(context, PdfList());
+              },
+            ),
+            InkWell(
+              child: const Card(
+                child: ListTile(
+                  title: Text('Videos'),
+                ),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                NavigationManager.navigateTo(context, VideoList());
+              },
             ),
             InkWell(
               child: const Card(

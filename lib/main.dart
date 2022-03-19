@@ -1,10 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:svapp/authentication/mentor/view_models/mentor_login_vm.dart';
+import 'package:svapp/common/view_models/view_pdf_vm.dart';
+import 'package:svapp/mentor/view_models/add_pdf_vm.dart';
 import 'package:svapp/mentor/view_models/add_test_vm.dart';
 import 'package:svapp/splash/views/splash_screen.dart';
 import 'package:svapp/theme/constants.dart';
@@ -17,6 +20,7 @@ import 'authentication/aspirant/view_models/personal_info_vm.dart';
 import 'authentication/aspirant/view_models/phone_auth_vm.dart';
 import 'authentication/aspirant/view_models/sign_in_vm.dart';
 import 'authentication/aspirant/view_models/sign_up_vm.dart';
+import 'mentor/view_models/add_video_vm.dart';
 import 'mentor/view_models/categories_vm.dart';
 import 'mentor/view_models/mentor_home_vm.dart';
 import 'mentor/view_models/sub_categories_vm.dart';
@@ -25,8 +29,8 @@ late SharedPreferences prefs;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  //SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack, overlays: []);
-  //SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack, overlays: []);
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   prefs = await SharedPreferences.getInstance();
   runApp(const MyApp());
 }
@@ -56,13 +60,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<ExamDescVM>(create: (_) => ExamDescVM()),
         ChangeNotifierProvider<TestScreenVM>(create: (_) => TestScreenVM()),
         ChangeNotifierProvider<UserHomeVM>(create: (_) => UserHomeVM()),
-        ChangeNotifierProvider<UserDrawerVM>(create: (_) => UserDrawerVM())
+        ChangeNotifierProvider<UserDrawerVM>(create: (_) => UserDrawerVM()),
+        ChangeNotifierProvider<AddPdfVM>(create: (_) => AddPdfVM()),
+        ChangeNotifierProvider<ViewPdfVM>(create: ((_) => ViewPdfVM())),
+        ChangeNotifierProvider<AddVideoVm>(create: (_) => AddVideoVm()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         //themeMode: ThemeMode.dark,
         darkTheme: ThemeData(),
-
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           scaffoldBackgroundColor: scaffoldBackgroundColor,

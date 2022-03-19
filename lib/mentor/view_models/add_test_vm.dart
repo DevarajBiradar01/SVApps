@@ -45,6 +45,7 @@ class AddTestVM extends ChangeNotifier {
     marksPerQuestionController = TextEditingController();
     optionsPerQuestion = TextEditingController();
     negativeMarks = TextEditingController();
+    _uploadedFile = '';
   }
 
   selectCategory(String category) {
@@ -117,7 +118,6 @@ class AddTestVM extends ChangeNotifier {
     } else {
       User? user = await AuthenticationHelper().getCurrentUser;
       final categoriesRef = _db.collection('test').doc();
-      answers;
       await categoriesRef.set({
         'category': selectedCategory,
         'sub_category': selectedSubCategory,
