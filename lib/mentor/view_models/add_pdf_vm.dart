@@ -7,6 +7,8 @@ import '../../user/utils/widgets.dart';
 import '../../utils/utilities.dart';
 
 class AddPdfVM extends ChangeNotifier {
+  String selectedCategory = 'Select Category';
+  String selectedSubCategory = 'Select Sub Category';
   String _uploadedFile = '';
   final TextEditingController _date = TextEditingController();
   final TextEditingController _title = TextEditingController();
@@ -20,6 +22,8 @@ class AddPdfVM extends ChangeNotifier {
     _date.text = '';
     _title.text = '';
     _uploadedFile = '';
+    selectedCategory = 'Select Category';
+    selectedSubCategory = 'Select Sub Category';
   }
 
   uploadPDF(BuildContext context) async {
@@ -27,8 +31,22 @@ class AddPdfVM extends ChangeNotifier {
     notifyListeners();
   }
 
+  selectCategory(String category) {
+    selectedCategory = category;
+    notifyListeners();
+  }
+
+  selectSubCategory(String subCategory) {
+    selectedSubCategory = subCategory;
+    notifyListeners();
+  }
+
   save(BuildContext context) async {
-    if (_title.text.trim().isEmpty) {
+    if (selectedCategory == 'Select Category') {
+      snackbar(context, 'Please Select Category');
+    } else if (selectedSubCategory == 'Select Sub Category') {
+      snackbar(context, 'Please Select Sub Category');
+    } else if (_title.text.trim().isEmpty) {
       snackbar(context, 'Enter title field');
     } else if (_date.text.trim().isEmpty) {
       snackbar(context, 'Enter date field');
@@ -39,6 +57,8 @@ class AddPdfVM extends ChangeNotifier {
       final categoriesRef = _db.collection('pdfs').doc();
       await categoriesRef.set({
         'author': user?.displayName,
+        'category': selectedCategory,
+        'sub_category': selectedSubCategory,
         'createdAt': DateTime.now().microsecondsSinceEpoch,
         'createdBy': user?.uid,
         'modifiedAt': DateTime.now().microsecondsSinceEpoch,

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,6 +32,60 @@ class _AddPdfState extends State<AddPdf> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('categories')
+                      .orderBy("categoryName")
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) {
+                      debugPrint('snapshot status: ${snapshot.error}');
+                      return const Text('No Data');
+                    } else {
+                      return DropdownButtonFormField<dynamic>(
+                        items: snapshot.data?.docs.map((label) {
+                          return DropdownMenuItem(
+                            child: FittedBox(
+                                child: Text(label.get('categoryName'))),
+                            value: label.get('categoryName'),
+                          );
+                        }).toList(),
+                        hint: const Text('Select Category'),
+                        onChanged: (value) {
+                          model.selectCategory(value);
+                        },
+                      );
+                    }
+                  }),
+              buildColumnSpacer(),
+              StreamBuilder<QuerySnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('sub_categories')
+                      .where('category', isEqualTo: model.selectedCategory)
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) {
+                      debugPrint('snapshot status: ${snapshot.error}');
+                      return const Text('No Data');
+                    } else {
+                      return DropdownButtonFormField<dynamic>(
+                        items: snapshot.data?.docs.map((label) {
+                          return DropdownMenuItem(
+                            child: FittedBox(
+                                child: Text(label.get('subCategoryName'))),
+                            value: label.get('subCategoryName'),
+                          );
+                        }).toList(),
+                        hint: const Text('Select Sub Category'),
+                        onChanged: (value) {
+                          model.selectSubCategory(value);
+                        },
+                      );
+                    }
+                  }),
+              buildColumnSpacer(),
               TextFormField(
                 controller: model.title,
                 decoration: const InputDecoration(
