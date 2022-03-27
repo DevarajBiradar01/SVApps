@@ -38,36 +38,38 @@ class _UserHomeState extends State<UserHome> {
             Row(
               children: [
                 buildMenuCard(
-                    label: 'Exams',
-                    onTap: () {
-                      NavigationManager.navigateTo(
-                        context,
-                        LiveExamsList(
-                          appTitle: 'Live Exams',
-                          query: FirebaseFirestore.instance
-                              .collection('test')
-                              .where('endDate',
-                                  isGreaterThanOrEqualTo:
-                                      getTodayDateTimeStamp())
-                              .snapshots(),
-                        ),
-                      );
-                    },
-                    gradientColors: [Colors.pinkAccent, Colors.deepOrange]),
+                  label: 'Live \nExams ',
+                  onTap: () {
+                    NavigationManager.navigateTo(
+                      context,
+                      LiveExamsList(
+                        appTitle: 'Live Exams',
+                        query: FirebaseFirestore.instance
+                            .collection('test')
+                            .where('endDate',
+                                isGreaterThanOrEqualTo: getTodayDateTimeStamp())
+                            .snapshots(),
+                      ),
+                    );
+                  },
+                  //gradientColors: [Colors.pinkAccent, Colors.deepOrange],
+                ),
                 const Spacer(),
                 buildMenuCard(
-                    label: 'Videos',
-                    onTap: () {
-                      NavigationManager.navigateTo(context, const Videos());
-                    },
-                    gradientColors: [Colors.green, Colors.blue]),
+                  label: 'Video \nCourses',
+                  onTap: () {
+                    NavigationManager.navigateTo(context, const Videos());
+                  },
+                  //gradientColors: [Colors.green, Colors.blue]
+                ),
                 const Spacer(),
                 buildMenuCard(
-                    label: 'PDFs',
-                    onTap: () {
-                      NavigationManager.navigateTo(context, const PDFs());
-                    },
-                    gradientColors: [Colors.pink, Colors.yellow]),
+                  label: 'PDF \nNotes',
+                  onTap: () {
+                    NavigationManager.navigateTo(context, const PDFs());
+                  },
+                  //gradientColors: [Colors.pink, Colors.yellow]
+                ),
               ],
             ),
             HeaderCard(
@@ -199,23 +201,40 @@ class _UserHomeState extends State<UserHome> {
       List<Color> gradientColors = const [Colors.red, Colors.blue]}) {
     return Card(
       elevation: 5,
-      child: InkWell(
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          height: 40,
-          width: MediaQuery.of(context).size.width * .3,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            gradient: LinearGradient(colors: gradientColors),
+      child: Container(
+        height: 130,
+        child: InkWell(
+          child: Column(
+            children: [
+              Container(
+                // color: Color.fromRGBO(254, 251, 234, 100),
+                child: Image.asset(
+                  'assets/sv_logo.png',
+                  width: 70,
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(10),
+                //  height: 40,
+                width: MediaQuery.of(context).size.width * .3,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  // gradient: LinearGradient(colors: gradientColors),
+                ),
+                child: Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  maxLines: 3,
+                  style: const TextStyle(
+                      //  color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w200),
+                ),
+              ),
+            ],
           ),
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-                color: Colors.white, fontSize: 16, fontWeight: FontWeight.w500),
-          ),
+          onTap: onTap,
         ),
-        onTap: onTap,
       ),
     );
   }
