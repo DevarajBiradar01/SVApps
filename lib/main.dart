@@ -20,6 +20,7 @@ import 'authentication/aspirant/view_models/personal_info_vm.dart';
 import 'authentication/aspirant/view_models/phone_auth_vm.dart';
 import 'authentication/aspirant/view_models/sign_in_vm.dart';
 import 'authentication/aspirant/view_models/sign_up_vm.dart';
+import 'common/view_models/view_video_vm.dart';
 import 'mentor/view_models/add_video_vm.dart';
 import 'mentor/view_models/categories_vm.dart';
 import 'mentor/view_models/mentor_home_vm.dart';
@@ -64,9 +65,10 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider<AddPdfVM>(create: (_) => AddPdfVM()),
         ChangeNotifierProvider<ViewPdfVM>(create: ((_) => ViewPdfVM())),
         ChangeNotifierProvider<AddVideoVm>(create: (_) => AddVideoVm()),
+        ChangeNotifierProvider<ViewVideoVM>(create: (_) => ViewVideoVM())
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'SV Exams',
         //themeMode: ThemeMode.dark,
         darkTheme: ThemeData(),
         debugShowCheckedModeBanner: false,

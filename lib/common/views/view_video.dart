@@ -2,13 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:svapp/common/view_models/view_video_vm.dart';
 import 'package:svapp/common/views/view_pdf.dart';
 import 'package:svapp/user/utils/navigation_manager.dart';
 import 'package:svapp/user/utils/spacers.dart';
 import 'package:svapp/user/utils/widgets.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
-
-import '../../utils/utilities.dart';
 
 class VideoView extends StatefulWidget {
   var data;
@@ -22,25 +22,18 @@ class _VideoViewState extends State<VideoView> {
   @override
   void initState() {
     super.initState();
-    updateViewCount();
+    Provider.of<ViewVideoVM>(context, listen: false)
+        .updateViewCount(widget.data);
+    Provider.of<ViewVideoVM>(context, listen: false).init();
     _controller = YoutubePlayerController(
       initialVideoId: widget.data['videoId'],
-      flags: const YoutubePlayerFlags(autoPlay: true, mute: false),
+      flags: const YoutubePlayerFlags(
+          autoPlay: true,
+          mute: false,
+          controlsVisibleAtStart: true,
+          loop: true,
+          useHybridComposition: true),
     );
-  }
-
-  updateViewCount() async {
-    log(widget.data['id']);
-    int views = widget.data['views'];
-    var collection = await FirebaseFirestore.instance.collection('videos');
-    collection.doc(widget.data['id']).update({'views': ++views});
-  }
-
-  updateLikes() async {
-    log(widget.data['id']);
-    int likes = widget.data['likes'];
-    var collection = await FirebaseFirestore.instance.collection('videos');
-    collection.doc(widget.data['id']).update({'likes': ++likes});
   }
 
   @override
@@ -54,23 +47,35 @@ class _VideoViewState extends State<VideoView> {
     if (orientation == Orientation.landscape) {
       return Scaffold(
         resizeToAvoidBottomInset: true,
-        body: FittedBox(
-          fit: BoxFit.fill,
-          child: YoutubePlayerBuilder(
-            player: YoutubePlayer(
-              controller: _controller,
-              actionsPadding: const EdgeInsets.only(left: 16.0),
-              bottomActions: [
-                CurrentPosition(),
-                const SizedBox(width: 10.0),
-                ProgressBar(isExpanded: true),
-                const SizedBox(width: 10.0),
-                RemainingDuration(),
-                FullScreenButton(),
-              ],
-              // width: MediaQuery.of(context).size.width,
+        body: SafeArea(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: YoutubePlayerBuilder(
+                onExitFullScreen: () {
+                  _controller.play();
+                },
+                onEnterFullScreen: () {
+                  _controller.play();
+                },
+                player: YoutubePlayer(
+                  controller: _controller,
+                  actionsPadding: const EdgeInsets.only(left: 16.0),
+                  bottomActions: [
+                    CurrentPosition(),
+                    const SizedBox(width: 10.0),
+                    ProgressBar(isExpanded: true),
+                    const SizedBox(width: 10.0),
+                    RemainingDuration(),
+                    FullScreenButton(),
+                  ],
+                  width: MediaQuery.of(context).size.width,
+                ),
+                builder: (context, player) => player,
+              ),
             ),
-            builder: (context, player) => player,
           ),
         ),
       );
@@ -82,9 +87,23 @@ class _VideoViewState extends State<VideoView> {
           child: Column(
             children: [
               YoutubePlayerBuilder(
+                onExitFullScreen: () {
+                  _controller.play();
+                },
+                onEnterFullScreen: () {
+                  _controller.play();
+                },
                 player: YoutubePlayer(
                   controller: _controller,
                   width: MediaQuery.of(context).size.width,
+                  bottomActions: [
+                    CurrentPosition(),
+                    const SizedBox(width: 10.0),
+                    ProgressBar(isExpanded: true),
+                    const SizedBox(width: 10.0),
+                    RemainingDuration(),
+                    FullScreenButton(),
+                  ],
                 ),
                 builder: (context, player) => player,
               ),
@@ -99,62 +118,65 @@ class _VideoViewState extends State<VideoView> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width * .6,
-                                  child: Text(
-                                    widget.data['title']
-                                        .toString()
-                                        .toUpperCase(),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                Spacer(),
-                                InkWell(
-                                  onTap: () => updateLikes(),
-                                  child: SizedBox(
+                            Consumer<ViewVideoVM>(
+                              builder: (context, model, child) => Row(
+                                children: [
+                                  SizedBox(
                                     width:
-                                        MediaQuery.of(context).size.width * .15,
-                                    child: Row(
-                                      children: [
-                                        const Icon(
-                                          Icons.thumb_up_alt_outlined,
-                                          color: Colors.red,
-                                        ),
-                                        buildRowSpacer(width: 5),
-                                        Text(
-                                          widget.data['likes'].toString(),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                      ],
+                                        MediaQuery.of(context).size.width * .6,
+                                    child: Text(
+                                      widget.data['title']
+                                          .toString()
+                                          .toUpperCase(),
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
-                                ),
-                                buildRowSpacer(width: 5),
-                                Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.remove_red_eye_outlined,
-                                      color: Colors.blue,
+                                  const Spacer(),
+                                  InkWell(
+                                    onTap: () => model.updateLikes(widget.data),
+                                    child: SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .15,
+                                      child: Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.thumb_up_alt_outlined,
+                                            color: Colors.red,
+                                          ),
+                                          buildRowSpacer(width: 5),
+                                          Text(
+                                            model.like.toString(),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    buildRowSpacer(width: 5),
-                                    Text(
-                                      widget.data['views'].toString(),
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                  ),
+                                  buildRowSpacer(width: 5),
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.remove_red_eye_outlined,
+                                        color: Colors.blue,
+                                      ),
+                                      buildRowSpacer(width: 5),
+                                      Text(
+                                        model.view.toString(),
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                             Text(widget.data['category']),
                             Text(widget.data['sub_category']),
@@ -170,17 +192,31 @@ class _VideoViewState extends State<VideoView> {
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: alternativeTestButton(
+                              child: fullButton(
                                   context: context,
                                   onTap: () => NavigationManager.navigateTo(
                                       context, ViewPdf(data: widget.data)),
-                                  buttonName: 'View Pdf'),
+                                  buttonName: 'View Class Notes'),
                             ),
                           )
                         : Container(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Text(widget.data['description']),
+                    buildColumnSpacer(),
+                    Consumer<ViewVideoVM>(
+                      builder: (context, model, child) => InkWell(
+                        onTap: () => model.toggleDescription(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: model.isHideDesc
+                              ? Text(
+                                  widget.data['description'],
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 4,
+                                )
+                              : Text(
+                                  widget.data['description'],
+                                ),
+                        ),
+                      ),
                     ),
                     buildColumnSpacer(),
                     SingleChildScrollView(
@@ -216,7 +252,7 @@ class _VideoViewState extends State<VideoView> {
                                                 BorderRadius.circular(5),
                                           ),
                                           child: Card(
-                                            color: Color.fromRGBO(
+                                            color: const Color.fromRGBO(
                                                 254, 251, 234, 10),
                                             child: Row(
                                               crossAxisAlignment:
@@ -319,6 +355,23 @@ class _VideoViewState extends State<VideoView> {
                                                           children: [
                                                             const Icon(
                                                               Icons
+                                                                  .thumb_up_alt_outlined,
+                                                              color: Colors.red,
+                                                            ),
+                                                            buildRowSpacer(
+                                                                width: 5),
+                                                            Text(
+                                                              doc['likes']
+                                                                  .toString(),
+                                                              style: const TextStyle(
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                  fontSize: 18),
+                                                            ),
+                                                            buildRowSpacer(),
+                                                            const Icon(
+                                                              Icons
                                                                   .remove_red_eye_outlined,
                                                               color:
                                                                   Colors.blue,
@@ -328,7 +381,7 @@ class _VideoViewState extends State<VideoView> {
                                                             Text(
                                                               doc['views']
                                                                   .toString(),
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
