@@ -48,6 +48,24 @@ class TestScreenVM extends ChangeNotifier {
         wrongAnswerCount++;
       }
     }
+
+    int notAnswered = 0;
+
+    for (int i = 0; i < questions; i++) {
+      if (answers[i] == -1) {
+        notAnswered++;
+      }
+    }
+
+    if (notAnswered > 0) {
+      showAlertDialog(context, testId, data, notAnswered);
+    } else {
+      submitAnswers(context, testId, data);
+    }
+  }
+
+  submitAnswers(BuildContext context, String testId, dynamic data) async {
+    showProgress(context);
     User? user = await AuthenticationHelper().getCurrentUser;
     final categoriesRef = FirebaseFirestore.instance.collection('attendees');
     await categoriesRef.add({
@@ -58,13 +76,52 @@ class TestScreenVM extends ChangeNotifier {
       'correct': correctAnswerCount,
       'wrong': wrongAnswerCount
     }).then((value) {
+      Navigator.pop(context);
       log("AddTestVM :: saveTest ()  value : ");
       snackbar(context, 'Test Submitted Successfully');
       showResult(context, data);
     }).catchError((onError) {
+      Navigator.pop(context);
       log("CategoriesVM :: saveCategory ()  onError : " + onError.toString());
       snackbar(context, onError.toString());
     });
+  }
+
+  showAlertDialog(
+      BuildContext context, String testId, dynamic data, int unAnswered) {
+    // Create button
+    Widget okButton = FlatButton(
+      child: const Text("Submit Anyway"),
+      onPressed: () async {
+        Navigator.of(context).pop();
+        submitAnswers(context, testId, data);
+      },
+    );
+
+    Widget cancelButton = FlatButton(
+      child: const Text("Cancel"),
+      onPressed: () async {
+        Navigator.of(context).pop();
+      },
+    );
+    // Create AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const Text("Warning!"),
+      content: Text(
+          'You skipped $unAnswered questions, Do you want to submit anyway?'),
+      actions: [
+        cancelButton,
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   onRadioButtonChanged(radioButtonId, int index, BuildContext context) {

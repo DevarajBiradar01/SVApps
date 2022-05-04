@@ -75,7 +75,7 @@ InkWell alternativeTestButton(
   return InkWell(
     onTap: onTap,
     child: Container(
-      width: MediaQuery.of(context).size.width * 0.25,
+      width: MediaQuery.of(context).size.width * 0.35,
       height: 40,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),

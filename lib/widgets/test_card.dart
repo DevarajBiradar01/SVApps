@@ -1,24 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 
+import '../firebase_auth/authentication_helper.dart';
 import '../user/utils/navigation_manager.dart';
 import '../user/utils/spacers.dart';
 import '../user/utils/widgets.dart';
 import '../user/views/exam_desc.dart';
 import '../utils/utilities.dart';
 
-class TestCard extends StatelessWidget {
+class TestCard extends StatefulWidget {
   final int limit;
   final bool isMentorCard;
-  String collection = 'test';
+  final String collection = 'test';
   dynamic query;
 
   TestCard({Key? key, this.limit = 1, this.isMentorCard = false, this.query})
       : super(key: key);
+  _TestCardState createState() => _TestCardState();
+}
+
+class _TestCardState extends State<TestCard> {
+  User? user;
+
+  @override
+  void initState() {
+    super.initState();
+    getUserId();
+  }
+
+  getUserId() async {
+    user = await AuthenticationHelper().getCurrentUser;
+  }
+
   @override
   Widget build(BuildContext context) {
+    dynamic query = widget.query;
+    String collection = widget.collection;
+    int limit = widget.limit;
     if (query == null) {
       query = FirebaseFirestore.instance
           .collection(collection)
@@ -191,17 +212,7 @@ class TestCard extends StatelessWidget {
                                     ],
                                   ),
                                   Spacer(),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: testButton(
-                                        context: context,
-                                        onTap: () =>
-                                            NavigationManager.navigateTo(
-                                                context, ExamDesc(data: doc)),
-                                        buttonName: doc['fees'] == '0'
-                                            ? 'Attempt Now'
-                                            : 'Unlock'),
-                                  ),
+                                  buildButton(context, doc),
                                 ],
                               ),
                               buildColumnSpacer(height: 10),
@@ -231,6 +242,41 @@ class TestCard extends StatelessWidget {
           }
         },
       ),
+    );
+  }
+
+  Widget buildButton(BuildContext context, DocumentSnapshot doc) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection('attendees')
+          .where('testId', isEqualTo: doc['id'])
+          .where('userId', isEqualTo: user?.uid)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          if (snapshot.data!.docs.length > 0) {
+            return Align(
+              alignment: Alignment.centerRight,
+              child: alternativeTestButton(
+                  context: context,
+                  onTap: () => NavigationManager.navigateTo(
+                      context, ExamDesc(data: doc)),
+                  buttonName: doc['fees'] == '0' ? 'Attempted' : 'Unlock'),
+            );
+          } else {
+            return Align(
+              alignment: Alignment.centerRight,
+              child: testButton(
+                  context: context,
+                  onTap: () => NavigationManager.navigateTo(
+                      context, ExamDesc(data: doc)),
+                  buttonName: doc['fees'] == '0' ? 'Attempt Now' : 'Unlock'),
+            );
+          }
+        } else {
+          return Container();
+        }
+      },
     );
   }
 }

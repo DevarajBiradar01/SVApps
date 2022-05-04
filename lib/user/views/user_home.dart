@@ -86,17 +86,43 @@ class _UserHomeState extends State<UserHome> {
                 ),
               ),
             ),
-            SizedBox(
-                child: TestCard(
-                  limit: 2,
-                  query: FirebaseFirestore.instance
-                      .collection('test')
-                      .where('endDate',
-                          isGreaterThanOrEqualTo: getTodayDateTimeStamp())
-                      .limit(2)
-                      .snapshots(),
-                ),
-                height: 370),
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('test')
+                  .where('endDate',
+                      isGreaterThanOrEqualTo: getTodayDateTimeStamp())
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data!.docs.length > 0) {
+                    return SizedBox(
+                        child: TestCard(
+                          limit: 2,
+                          query: FirebaseFirestore.instance
+                              .collection('test')
+                              .where('endDate',
+                                  isGreaterThanOrEqualTo:
+                                      getTodayDateTimeStamp())
+                              .limit(2)
+                              .snapshots(),
+                        ),
+                        height: snapshot.data!.docs.length > 2 ? 370 : 185);
+                  } else {
+                    return const SizedBox(
+                      height: 120,
+                      child: Center(
+                        child: Text(
+                          "No exams available now",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }
+                } else {
+                  return const Center(child: Text("No data"));
+                }
+              },
+            ),
             HeaderCard(
               title: 'MOCK TEST SERIES',
               onTap: () => NavigationManager.navigateTo(
@@ -125,17 +151,43 @@ class _UserHomeState extends State<UserHome> {
                 ),
               ),
             ),
-            SizedBox(
-                child: TestCard(
-                  limit: 2,
-                  query: FirebaseFirestore.instance
-                      .collection('test')
-                      .where('endDate', isLessThan: getTodayDateTimeStamp())
-                      .orderBy('endDate', descending: true)
-                      .limit(2)
-                      .snapshots(),
-                ),
-                height: 370),
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('test')
+                  .where('endDate', isLessThan: getTodayDateTimeStamp())
+                  .orderBy('endDate', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.data!.docs.length > 0) {
+                    return SizedBox(
+                        child: TestCard(
+                          limit: 2,
+                          query: FirebaseFirestore.instance
+                              .collection('test')
+                              .where('endDate',
+                                  isLessThan: getTodayDateTimeStamp())
+                              .orderBy('endDate', descending: true)
+                              .limit(2)
+                              .snapshots(),
+                        ),
+                        height: snapshot.data!.docs.length > 2 ? 370 : 185);
+                  } else {
+                    return const SizedBox(
+                      height: 120,
+                      child: Center(
+                        child: Text(
+                          "No exams available now",
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }
+                } else {
+                  return const Center(child: Text("No data"));
+                }
+              },
+            ),
           ],
         ),
       ),

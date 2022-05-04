@@ -98,7 +98,7 @@ class _TestScreenState extends State<TestScreen> {
                               ? '(Mark your answers below)'
                               : '(Check results below)'),
                           Container(
-                            margin: EdgeInsets.all(8),
+                            margin: const EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(5),
                               border: Border.all(color: Colors.red, width: 2),

@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:svapp/user/utils/navigation_manager.dart';
 import 'package:svapp/user/view_models/test_screen_vm.dart';
+import 'package:svapp/user/views/ranks.dart';
 
 import '../../firebase_auth/authentication_helper.dart';
 import '../../widgets/info_widget.dart';
@@ -14,6 +16,7 @@ class ResultSheet extends StatefulWidget {
   bool isShowAppBar;
   ResultSheet({Key? key, required this.data, this.isShowAppBar = false})
       : super(key: key);
+  @override
   _ResultSheetState createState() => _ResultSheetState();
 }
 
@@ -25,12 +28,9 @@ class _ResultSheetState extends State<ResultSheet> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     data = widget.data;
     Provider.of<TestScreenVM>(context, listen: false).getCurrentUserId();
-    // Provider.of<TestScreenVM>(context, listen: false)
-    //     .getMarkedAnswers(data['id']);
     getUserId();
   }
 
@@ -45,6 +45,7 @@ class _ResultSheetState extends State<ResultSheet> {
           ? appBar(title: 'Result Sheet')
           : const PreferredSize(
               child: SizedBox(height: 0), preferredSize: Size.zero),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
       body: SingleChildScrollView(
         child: Consumer<TestScreenVM>(
           builder: (context, model, child) => Column(
@@ -79,13 +80,35 @@ class _ResultSheetState extends State<ResultSheet> {
                                   InfoWidget(
                                       label: 'Correct',
                                       value: doc['correct'].toString()),
-                                  Spacer(),
+                                  const Spacer(),
                                   InfoWidget(
                                       label: 'Wrong',
                                       value: doc['wrong'].toString()),
-                                  Spacer(),
-                                  InfoWidget(
-                                      label: 'Time Taken', value: '4:56:20'),
+                                  const Spacer(),
+                                  FloatingActionButton.extended(
+                                    onPressed: () =>
+                                        NavigationManager.navigateTo(
+                                      context,
+                                      Ranks(
+                                        testId: data['id'],
+                                        marksPerQns: data['marksPerQns'],
+                                        noOfQns: data['noOfQns'],
+                                      ),
+                                    ),
+                                    backgroundColor: Colors.yellow,
+                                    label: const Text(
+                                      'Rankings',
+                                      style: TextStyle(
+                                          color: Colors.red,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    icon: const Icon(
+                                      Icons.bar_chart,
+                                      color: Colors.red,
+                                    ),
+                                  )
+                                  // const InfoWidget(
+                                  //     label: 'Time Taken', value: '4:56:20'),
                                 ],
                               ),
                             ),
@@ -93,9 +116,9 @@ class _ResultSheetState extends State<ResultSheet> {
                         ],
                       );
                     } else {
-                      return Container(
+                      return const SizedBox(
                         height: 120,
-                        child: const Center(
+                        child: Center(
                           child: Text(
                             "No exams available now",
                             textAlign: TextAlign.center,
@@ -116,13 +139,9 @@ class _ResultSheetState extends State<ResultSheet> {
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                     gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        Colors.white,
-                        Colors.amber,
-                      ],
-                    ),
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Colors.white, Colors.amber]),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -178,8 +197,8 @@ class _ResultSheetState extends State<ResultSheet> {
                                       horizontal: 16, vertical: 5),
                                   width: double.infinity,
                                   decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(5)),
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(5)),
                                     gradient: LinearGradient(
                                         colors: doc['correctAnswers'][index] ==
                                                 doc['submitted_answers'][index]
@@ -218,21 +237,10 @@ class _ResultSheetState extends State<ResultSheet> {
                                       const Spacer(),
                                       doc['submitted_answers'][index] ==
                                               doc['correctAnswers'][index]
-                                          ? const Icon(
-                                              Icons.check,
-                                              color: Colors.green,
-                                              size: 30,
-                                            )
-                                          : const Icon(
-                                              Icons.close,
-                                              color: Colors.red,
-                                              size: 30,
-                                            ),
-                                      // const Text(
-                                      //   'Result',
-                                      //   style: TextStyle(
-                                      //       fontWeight: FontWeight.bold),
-                                      // ),
+                                          ? const Icon(Icons.check,
+                                              color: Colors.green, size: 30)
+                                          : const Icon(Icons.close,
+                                              color: Colors.red, size: 30),
                                     ],
                                   ),
                                 ),

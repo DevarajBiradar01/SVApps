@@ -92,6 +92,7 @@ getTodayDateTimeStamp() {
 showProgress(BuildContext context) {
   return showDialog(
     context: context,
+    barrierDismissible: false,
     builder: (context) => AlertDialog(
       contentPadding: const EdgeInsets.all(0),
       content: Container(
