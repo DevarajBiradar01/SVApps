@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:svapp/authentication/aspirant/views/signin.dart';
+import 'package:svapp/user/utils/navigation_manager.dart';
 import 'package:svapp/user/utils/widgets.dart';
 
 import '../utils/utilities.dart';
@@ -68,5 +70,25 @@ class AuthenticationHelper {
     log('AuthenticationHelper :: signOut() ');
     await _auth.signOut();
     log('AuthenticationHelper :: signOut() : signed out ');
+  }
+
+  //Forgot Password
+  Future<void> sendPasswordResetEmail(
+      BuildContext context, String email) async {
+    showProgress(context);
+    log('AuthenticationHelper :: sendPasswordResetEmail() : email : ' + email);
+    await _auth.sendPasswordResetEmail(email: email).then((value) {
+      Navigator.pop(context);
+      log('AuthenticationHelper :: value : ');
+      snackbar(
+        context,
+        'Please Check your mail : $email \n for password reset link',
+      );
+      NavigationManager.navigateTo(context, const SignIn());
+    }).catchError((var onError) {
+      Navigator.pop(context);
+      log('AuthenticationHelper :: onError : ' + onError.message.toString());
+      snackbar(context, onError.message.toString());
+    });
   }
 }

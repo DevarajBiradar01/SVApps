@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:svapp/authentication/aspirant/views/forgot_password.dart';
 import 'package:svapp/authentication/mentor/views/mentor_login.dart';
 import 'package:svapp/firebase_auth/authentication_helper.dart';
 import 'package:svapp/user/utils/navigation_manager.dart';
@@ -59,7 +60,7 @@ class SignInVM extends ChangeNotifier {
   }
 
   void onForgotPasswordPressed(BuildContext context) {
-    //NavigationManager.navigateTo(context, SignUp());
+    NavigationManager.navigateTo(context, ForgotPassword());
   }
 
   void getUserDetails(
