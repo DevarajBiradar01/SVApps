@@ -38,7 +38,7 @@ class ForgotPassword extends StatelessWidget {
                 ),
                 buildColumnSpacer(height: 5),
                 const Text(
-                  'Welcome back',
+                  'Forgot Password?',
                   textAlign: TextAlign.left,
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),

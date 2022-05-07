@@ -59,10 +59,27 @@ class _CategoriesState extends State<Categories> {
                             keyboardType: TextInputType.text,
                           ),
                           buildColumnSpacer(),
+                          // Row(
+                          //   children: [
+                          //     SizedBox(
+                          //       child: Text(model.uploadedFile),
+                          //       width: MediaQuery.of(context).size.width * 0.3,
+                          //     ),
+                          //     const Spacer(),
+                          //     FittedBox(
+                          //       child: testButton(
+                          //           context: context,
+                          //           onTap: () => model.uploadPDF(context),
+                          //           buttonName: 'Upload PDF'),
+                          //     )
+                          //   ],
+                          // ),
+                          // buildColumnSpacer(),
                           rightAlignedButton(
                               context: context,
                               onTap: () => model.saveCategory(context),
-                              buttonName: 'ADD')
+                              buttonName: 'ADD'),
+                          buildColumnSpacer(height: 20),
                         ],
                       ),
                     ),

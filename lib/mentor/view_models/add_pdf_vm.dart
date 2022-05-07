@@ -53,6 +53,7 @@ class AddPdfVM extends ChangeNotifier {
     } else if (!_uploadedFile.contains('.pdf')) {
       snackbar(context, 'Upload pdf file!');
     } else {
+      showProgress(context);
       User? user = await AuthenticationHelper().getCurrentUser;
       final categoriesRef = _db.collection('pdfs').doc();
       await categoriesRef.set({
@@ -68,6 +69,7 @@ class AddPdfVM extends ChangeNotifier {
         'date': _date.text.trim(),
         'id': categoriesRef.id
       }).then((value) {
+        Navigator.of(context).pop();
         log("AddTestVM :: saveTest ()  value : ");
         snackbar(context, 'Test Added Successfully');
         _date.text = '';
@@ -75,6 +77,7 @@ class AddPdfVM extends ChangeNotifier {
         _uploadedFile = '';
         Navigator.pop(context);
       }).catchError((onError) {
+        Navigator.of(context).pop();
         log("CategoriesVM :: saveCategory ()  onError : " + onError.toString());
         snackbar(context, onError.toString());
       });

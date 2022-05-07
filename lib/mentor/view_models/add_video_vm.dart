@@ -56,6 +56,7 @@ class AddVideoVm extends ChangeNotifier {
     } else if (_videoId.text.trim().isEmpty) {
       snackbar(context, 'Enter date field');
     } else {
+      showProgress(context);
       User? user = await AuthenticationHelper().getCurrentUser;
       final categoriesRef = _db.collection('videos').doc();
       await categoriesRef.set({
@@ -74,6 +75,7 @@ class AddVideoVm extends ChangeNotifier {
         'likes': 0,
         'views': 0
       }).then((value) {
+        Navigator.of(context).pop();
         log("AddTestVM :: saveTest ()  value : ");
         snackbar(context, 'Test Added Successfully');
         _videoId.text = '';
@@ -84,6 +86,7 @@ class AddVideoVm extends ChangeNotifier {
         selectedSubCategory = 'Select Sub Category';
         Navigator.pop(context);
       }).catchError((onError) {
+        Navigator.of(context).pop();
         log("AddVideoVM :: saveCategory ()  onError : " + onError.toString());
         snackbar(context, onError.toString());
       });

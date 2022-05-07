@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:svapp/mentor/views/mentor_home.dart';
 
 import '../../firebase_auth/authentication_helper.dart';
@@ -104,10 +105,38 @@ class AddTestVM extends ChangeNotifier {
       snackbar(context, 'Please Select Status');
     } else {
       questions = int.parse(noOfQuestionsController.text.trim());
-      answers = List.filled(questions, 0);
+      answers = List.filled(questions, -1);
       NavigationManager.navigateTo(context, Answers());
       //save(context);
     }
+  }
+
+  showAlertDialog(BuildContext context, int unAnswered) {
+    // Create button
+    Widget okButton = TextButton(
+      child: const Text("OK"),
+      onPressed: () async {
+        Navigator.of(context).pop();
+      },
+    );
+
+    // Create AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const Text("Warning!"),
+      content: Text(
+          'You skipped $unAnswered questions, Please provide all the answers!'),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
   save(BuildContext context) async {
@@ -116,43 +145,62 @@ class AddTestVM extends ChangeNotifier {
     } else if (!_uploadedFile.contains('.pdf')) {
       snackbar(context, 'Upload pdf file!');
     } else {
-      User? user = await AuthenticationHelper().getCurrentUser;
-      final categoriesRef = _db.collection('test').doc();
-      await categoriesRef.set({
-        'category': selectedCategory,
-        'sub_category': selectedSubCategory,
-        'medium': selectedMedium,
-        'noOfQns': noOfQuestionsController.text.trim(),
-        'examTitle': examTitleController.text.trim(),
-        'desc': descriptionController.text.trim(),
-        'startDate':
-            convertStringToTimeStamp(examStartDateController.text.trim()),
-        'endDate': convertStringToTimeStamp(examEndDateController.text.trim()),
-        // 'startTime': examStartTimeController.text.trim(),
-        // 'endTime': examEndTimeController.text.trim(),
-        'duration': examDurationController.text.trim(),
-        'marksPerQns': marksPerQuestionController.text.trim(),
-        'optionsPerQns': 4,
-        'attemptCount': 0,
-        'status': selectedStatus,
-        'author': user?.displayName,
-        'createdAt': DateTime.now().microsecondsSinceEpoch,
-        'createdBy': user?.uid,
-        'modifiedAt': DateTime.now().microsecondsSinceEpoch,
-        'modifiedBy': user?.uid,
-        'pdf': _uploadedFile,
-        'fees': examFeeController.text.trim(),
-        'answers': answers,
-        'id': categoriesRef.id
-      }).then((value) {
-        log("AddTestVM :: saveTest ()  value : ");
-        snackbar(context, 'Test Added Successfully');
-        NavigationManager.pushAndRemoveUntil(context, MentorHome());
-      }).catchError((onError) {
-        log("CategoriesVM :: saveCategory ()  onError : " + onError.toString());
-        snackbar(context, onError.toString());
-      });
+      int notAnswered = 0;
+
+      for (int i = 0; i < questions; i++) {
+        if (answers[i] == -1) {
+          notAnswered++;
+        }
+      }
+
+      if (notAnswered > 0) {
+        showAlertDialog(context, notAnswered);
+      } else {
+        submitTestRequest(context);
+      }
     }
+  }
+
+  submitTestRequest(BuildContext context) async {
+    showProgress(context);
+    User? user = await AuthenticationHelper().getCurrentUser;
+    final categoriesRef = _db.collection('test').doc();
+    await categoriesRef.set({
+      'category': selectedCategory,
+      'sub_category': selectedSubCategory,
+      'medium': selectedMedium,
+      'noOfQns': noOfQuestionsController.text.trim(),
+      'examTitle': examTitleController.text.trim(),
+      'desc': descriptionController.text.trim(),
+      'startDate':
+          convertStringToTimeStamp(examStartDateController.text.trim()),
+      'endDate': convertStringToTimeStamp(examEndDateController.text.trim()),
+      // 'startTime': examStartTimeController.text.trim(),
+      // 'endTime': examEndTimeController.text.trim(),
+      'duration': examDurationController.text.trim(),
+      'marksPerQns': marksPerQuestionController.text.trim(),
+      'optionsPerQns': 4,
+      'attemptCount': 0,
+      'status': selectedStatus,
+      'author': user?.displayName,
+      'createdAt': DateTime.now().microsecondsSinceEpoch,
+      'createdBy': user?.uid,
+      'modifiedAt': DateTime.now().microsecondsSinceEpoch,
+      'modifiedBy': user?.uid,
+      'pdf': _uploadedFile,
+      'fees': examFeeController.text.trim(),
+      'answers': answers,
+      'id': categoriesRef.id
+    }).then((value) {
+      Navigator.of(context).pop();
+      log("AddTestVM :: saveTest ()  value : ");
+      snackbar(context, 'Test Added Successfully');
+      NavigationManager.pushAndRemoveUntil(context, MentorHome());
+    }).catchError((onError) {
+      Navigator.of(context).pop();
+      log("CategoriesVM :: saveCategory ()  onError : " + onError.toString());
+      snackbar(context, onError.toString());
+    });
   }
 
   String _uploadedFile = '';

@@ -18,6 +18,12 @@ class CategoriesVM extends ChangeNotifier {
   List<Category> _category = [];
   List<Category> get categories => _category;
   static final FirebaseFirestore _db = FirebaseFirestore.instance;
+  String get uploadedFile => _uploadedFile;
+  String _uploadedFile = '';
+  uploadPDF(BuildContext context) async {
+    _uploadedFile = await getPdfAndUpload(context);
+    notifyListeners();
+  }
 
   saveCategory(BuildContext context) async {
     if (categoryController.text.trim().length > 0) {
@@ -35,6 +41,7 @@ class CategoriesVM extends ChangeNotifier {
           await categoriesRef.add({
             'categoryName': categoryController.text.trim().toUpperCase(),
             'createdBy': user?.uid,
+            'logo': _uploadedFile
           }).then((value) {
             log("CategoriesVM :: saveCategory ()  value : ");
             snackbar(context, 'Category Added Successfully');
